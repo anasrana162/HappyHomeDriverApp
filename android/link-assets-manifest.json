@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Careem Bold.ttf",
+      "sha1": "8817a82c19070328e2f2297f81282dda154a1175"
+    },
+    {
+      "path": "assets/fonts/Careem Regular.ttf",
+      "sha1": "12527d8e0195f2dc69c75d668ac9aef4fd76c035"
+    }
+  ]
+}

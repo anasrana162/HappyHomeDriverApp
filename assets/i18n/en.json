@@ -1,0 +1,20 @@
+{
+    "translation": {
+        "available": "I am available",
+        "unavailable": "I am unavailable",
+        "today earnings": "Today Earnings",
+        "assigned": "Driver Assigned",
+        "out for delivery": "Out for Delivery",
+        "failed": "Failed Delivery",
+        "delivered": "Delivered",
+        "settings": "Settings",
+        "total": "Total",
+        "delivery Setting": "Delivery Setting",
+        "transportation Mode": "Transportation Mode",
+        "navigation APP": "Navigation APP",
+        "vehicle type": "Vehicle type",
+        "contact Info": "Contact Info",
+        "first name": "First name",
+        "last name": "Last name"
+    }
+}
