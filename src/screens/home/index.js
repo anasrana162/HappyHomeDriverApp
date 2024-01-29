@@ -76,14 +76,14 @@ const Home = ({ navigation, route }) => {
           .includes(order?.id);
         return data;
       });
-      // console.log("filteredOrders1", filteredOrders1)
       setAssignedOrders(filteredOrders1);
       const filteredOrders2 = allOrderDetails.filter(order => {
         const data = orderIDs?.out_for_delivery
-          .map(i => JSON.parse(i.ID))
-          .includes(order?.id);
+        .map(i => JSON.parse(i.ID))
+        .includes(order?.id);
         return data;
       });
+      console.log("filteredOrders2 outfordelivery", filteredOrders2)
       setOutForDelivery(filteredOrders2);
       const filteredOrders3 = allOrderDetails.filter(order => {
         const data = orderIDs?.failed_attempt

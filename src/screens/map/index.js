@@ -7,23 +7,24 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
-import MapView, {Marker, AnimatedRegion} from 'react-native-maps';
+import React, { useState, useRef, useEffect } from 'react';
+import MapView, { Marker, AnimatedRegion } from 'react-native-maps';
 import axios from 'axios';
-import {GOOGLE_MAPS_APIKEY} from '@env';
-import {useDispatch, useSelector} from 'react-redux';
+import { GOOGLE_MAPS_APIKEY } from '@env';
+import { useDispatch, useSelector } from 'react-redux';
 import MapViewDirections from 'react-native-maps-directions';
-import {ASSETS, COLOR, windowWidth} from '../../assets';
+import { ASSETS, COLOR, windowWidth } from '../../assets';
 import Box from '../../components/atoms/Box';
 import SectionText from '../../components/atoms/SectionText';
-import {selectLastLocation, setLocation} from '../../redux/lastLocSlice';
-import {getCurrentLocation, locationPermission} from '../../utils/handlers';
-import {selectSetting} from '../../redux/settingSlice';
+import { selectLastLocation, setLocation } from '../../redux/lastLocSlice';
+import { getCurrentLocation, locationPermission } from '../../utils/handlers';
+import { selectSetting } from '../../redux/settingSlice';
 import CircleButton from '../../components/atoms/CircleButton';
+import Geocoder from 'react-native-geocoding';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const Map = ({route, navigation}) => {
+const Map = ({ route, navigation }) => {
   const aspectRatio = width / height;
   const latitudeDelta = 0.015;
   const longitudeDelta = latitudeDelta * aspectRatio;
@@ -42,7 +43,7 @@ const Map = ({route, navigation}) => {
   };
 
   // Live Coordinates
-  const [curCords, setCurCords] = useState({latitude: 0, longitude: 0});
+  const [curCords, setCurCords] = useState({ latitude: 0, longitude: 0 });
   const [visible, setVisible] = useState(true);
   const [state, setState] = useState({
     currentLoc: initialRegion,
@@ -58,21 +59,21 @@ const Map = ({route, navigation}) => {
     time: 0,
   });
 
-  const {currentLoc, shippingLoc, coordinate, distance, time, heading} = state;
-  const updateState = data => setState(state => ({...state, ...data}));
+  const { currentLoc, shippingLoc, coordinate, distance, time, heading } = state;
+  const updateState = data => setState(state => ({ ...state, ...data }));
 
   // Live Location of Driver
   const getLiveLocation = async () => {
     const locPermissionDenied = await locationPermission();
     if (locPermissionDenied) {
-      const {latitude, longitude, heading} = await getCurrentLocation();
+      const { latitude, longitude, heading } = await getCurrentLocation();
       try {
         animate(latitude, longitude);
-        setCurCords({latitude, longitude});
+        setCurCords({ latitude, longitude });
         updateState({
           heading: heading,
-          currentLoc: {latitude, longitude},
-          coordinate: new AnimatedRegion({latitude, longitude}),
+          currentLoc: { latitude, longitude },
+          coordinate: new AnimatedRegion({ latitude, longitude }),
         });
       } catch (error) {
         console.log('Error Live Location: ', error);
@@ -82,7 +83,7 @@ const Map = ({route, navigation}) => {
 
   // Rider Icon Animation
   const animate = (latitude, longitude) => {
-    const newCoordinates = {latitude, longitude};
+    const newCoordinates = { latitude, longitude };
     if (Platform.OS === 'android') {
       if (mapRef?.current) {
         markerRef?.current?.animateMarkerToCoordinate(newCoordinates, 7000);
@@ -94,7 +95,7 @@ const Map = ({route, navigation}) => {
 
   // Time & Distance from Driver to shipping location
   const fetchTimeAndDist = (distance, time) => {
-    setState(state => ({...state, distance, time}));
+    setState(state => ({ ...state, distance, time }));
   };
 
   const onCenter = () => {
@@ -176,13 +177,24 @@ const Map = ({route, navigation}) => {
         throw new Error('Address not found');
       }
     } catch (error) {
+      alert("Address not found!")
       throw new Error('Error geocoding address: ' + error.message);
     }
   };
 
   const handleGeocode = async () => {
     try {
-      const result = await geocodeAddress(route?.params?.address);
+      console.log('result map useffect :>> ', route?.params?.address);
+      // console.log("GOOGLE_MAPS_APIKEY",GOOGLE_MAPS_APIKEY);
+       const result = await geocodeAddress(route?.params?.address);
+      // Geocoder.init("AIzaSyDN1lfhrd5OmoiYyrHrYH6cS58FBdJzBZ0");
+      // const result = await Geocoder.from(route?.params?.address)
+      //   .then(json => {
+      //     var location = json.results[0].geometry.location;
+      //     console.log(location);
+      //   })
+      //   .catch(error => console.warn(error));
+      //   console.log("Result geocoding", result);
       updateState({
         shippingLoc: {
           latitude: result?.latitude,
@@ -217,7 +229,7 @@ const Map = ({route, navigation}) => {
               coordinate={coordinate}
               // title="Mansoor Akhter"
               image={ASSETS.navigation}
-              style={{transform: [{rotate: `${heading}deg`}]}}
+              style={{ transform: [{ rotate: `${heading}deg` }] }}
             />
 
             {/* Custom Marker */}
@@ -274,7 +286,7 @@ const Map = ({route, navigation}) => {
               <Image source={ASSETS.navigate} style={styles.navIcon} />
               <SectionText fz={20} title={`${distance?.toFixed(1)} / km`} />
             </View>
-            <View style={[styles.timeDist, {justifyContent: 'flex-end'}]}>
+            <View style={[styles.timeDist, { justifyContent: 'flex-end' }]}>
               <Image source={ASSETS.clock} style={styles.clockIcon} />
               <SectionText fz={20} title={`${time?.toFixed(0)} min`} />
             </View>
@@ -324,6 +336,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  navIcon: {width: 20, height: 20},
-  clockIcon: {width: 19, height: 19},
+  navIcon: { width: 20, height: 20 },
+  clockIcon: { width: 19, height: 19 },
 });

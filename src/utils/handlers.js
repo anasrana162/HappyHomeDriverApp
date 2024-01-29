@@ -9,6 +9,10 @@ import Geolocation from 'react-native-geolocation-service';
 
 
 export const whatsappHandler = contactNo => {
+  console.log("contact No", contactNo);
+  if(contactNo == ""){
+    return alert("Contact Number not available!")
+  }
   const url = 'whatsapp://send?text=' + '' + '&phone=' + contactNo;
   Linking.openURL(url)
     .then(data => {
@@ -25,11 +29,15 @@ export const whatsappHandler = contactNo => {
 };
 
 export const callHandler = contactNo => {
+  if(contactNo == ""){
+    return alert("Contact Number not available!")
+  }
   let phoneNumber = '';
   if (Platform.OS === 'android') {
     phoneNumber = `tel:${contactNo}`;
-  } else {
-    phoneNumber = `telprompt:${number}`;
+  } 
+  else {
+    phoneNumber = `telprompt:${contactNo}`;
   }
   Linking.openURL(phoneNumber);
 };

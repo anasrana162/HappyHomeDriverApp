@@ -58,7 +58,7 @@ export const allOrders = async () => {
       consumer_secret: 'cs_0ac5a1025944f0b9b0b0ee606b3ff6d4817807c2',
       per_page:100,
       _fields:
-        'id,status,currency,date_created,discount_total,shipping_total,total,total_tax,billing.first_name,billing.last_name,billing.address_1,billinh.phone,shipping.first_name,shipping.last_name,shipping.address_1,shipping.phone,payment_method_title,line_items',
+        'id,status,currency,date_created,discount_total,shipping_total,total,total_tax,billing.first_name,billing.last_name,billing.address_1,billing.phone,shipping.first_name,shipping.last_name,shipping.address_1,shipping.phone,payment_method_title,line_items',
     };
 
     const res = await axios.get(

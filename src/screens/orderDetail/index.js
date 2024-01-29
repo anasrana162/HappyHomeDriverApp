@@ -1,26 +1,26 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
-import {globals} from '../../styles/gobalStyles';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { globals } from '../../styles/gobalStyles';
 import Box from '../../components/atoms/Box';
-import {ASSETS, COLOR, screenWidth} from '../../assets';
+import { ASSETS, COLOR, screenWidth } from '../../assets';
 import OrderHeader from '../../components/molecules/OrderHeader';
 import LongButton from '../../components/atoms/LongButton';
-import {callHandler, whatsappHandler} from '../../utils/handlers';
+import { callHandler, whatsappHandler } from '../../utils/handlers';
 import BoxHeading from '../../components/atoms/BoxHeading';
 import SectionText from '../../components/atoms/SectionText';
-import {selectUser} from '../../redux/authSlice';
-import {useSelector} from 'react-redux';
-import {updateOrder} from '../../api/APIs';
-import {selectLanguage} from '../../redux/languageSlice';
+import { selectUser } from '../../redux/authSlice';
+import { useSelector } from 'react-redux';
+import { updateOrder } from '../../api/APIs';
+import { selectLanguage } from '../../redux/languageSlice';
 
-const OrderDetail = ({route, navigation}) => {
+const OrderDetail = ({ route, navigation }) => {
   const [loader, setLoader] = useState(false);
   const [loaderCancelBtn, setLoaderCancelBtn] = useState(false);
   const [priceAllProducts, setPriceAllProducts] = useState();
 
   const [user] = useSelector(selectUser);
   const loadLang = useSelector(selectLanguage);
-  const {title, item} = route?.params;
+  const { title, item } = route?.params;
   const {
     id,
     total,
@@ -37,7 +37,11 @@ const OrderDetail = ({route, navigation}) => {
     refunds, //add in api parameter
   } = item;
 
-  const {first_name, last_name, address_1, address_2, city, phone} = billing;
+  const { first_name, last_name, address_1, address_2, city,phone } = billing;
+
+
+  console.log('Billing :>> ', item?.line_items);
+
   const subTotal = line_items
     .map(item => item?.subtotal || 0)
     .reduce((acc, price) => acc + JSON.parse(price), 0);
@@ -82,7 +86,7 @@ const OrderDetail = ({route, navigation}) => {
         {/* INFO */}
         <Box>
           <BoxHeading heading="Info" icon={ASSETS.info} />
-          <View style={[{alignSelf: as}, styles.sectionWrpr]}>
+          <View style={[{ alignSelf: as }, styles.sectionWrpr]}>
             <SectionText title="Date" info={date_created} coln={true} />
             <SectionText title="Status" info={status} coln={true} />
             <SectionText
@@ -100,7 +104,7 @@ const OrderDetail = ({route, navigation}) => {
         {/* Shipping */}
         <Box>
           <BoxHeading heading="Shipping Address" icon={ASSETS.map} />
-          <View style={[{alignSelf: as}, styles.sectionWrpr]}>
+          <View style={[{ alignSelf: as }, styles.sectionWrpr]}>
             <SectionText
               info={`${shipping?.first_name} ${shipping?.last_name}`}
             />
@@ -112,7 +116,7 @@ const OrderDetail = ({route, navigation}) => {
               title="Map"
               icon={ASSETS.map}
               onPress={() =>
-                navigation.navigate('Map', {address: shipping?.address_1})
+                navigation.navigate('Map', { address: shipping?.address_1 })
               }
             />
           )}
@@ -120,7 +124,7 @@ const OrderDetail = ({route, navigation}) => {
         {/* Pickup */}
         <Box>
           <BoxHeading heading="Pickup Address" icon={ASSETS.shop} />
-          <View style={[styles.sectionWrpr, {alignSelf: as}]}>
+          <View style={[styles.sectionWrpr, { alignSelf: as }]}>
             <SectionText info="Happy Home DHA Phase:2" />
           </View>
           {status === 'out-for-delivery' && (
@@ -130,7 +134,7 @@ const OrderDetail = ({route, navigation}) => {
         {/* Customer */}
         <Box>
           <BoxHeading heading="Customer" icon={ASSETS.user} />
-          <View style={[styles.sectionWrpr, {alignSelf: as}]}>
+          <View style={[styles.sectionWrpr, { alignSelf: as }]}>
             <SectionText info={`${first_name} ${last_name}`} />
             <SectionText info={phone} />
           </View>
@@ -140,21 +144,27 @@ const OrderDetail = ({route, navigation}) => {
               icon={ASSETS.call}
               bg={COLOR.blue}
               w="48%"
-              onPress={() => callHandler(phone)}
+              onPress={() => {
+                console.log("phone sent", phone);
+                callHandler(phone)
+              }}
             />
             <LongButton
               title="Whatsapp"
               icon={ASSETS.whatsapp}
               bg={COLOR.green}
               w="48%"
-              onPress={() => whatsappHandler(phone)}
+              onPress={() => {
+                console.log("phone sent", phone);
+                whatsappHandler(phone)
+              }}
             />
           </View>
         </Box>
         {/* Billing Address */}
         <Box>
           <BoxHeading heading="Billing Address" icon={ASSETS.bill} />
-          <View style={[styles.sectionWrpr, {alignSelf: as}]}>
+          <View style={[styles.sectionWrpr, { alignSelf: as }]}>
             <SectionText info={`${first_name} ${last_name}`} />
             <SectionText info={address_1} />
           </View>
@@ -199,7 +209,7 @@ const OrderDetail = ({route, navigation}) => {
         {/* Driver */}
         <Box>
           <BoxHeading heading="Driver" icon={ASSETS.driver} />
-          <View style={[styles.sectionWrpr, {alignSelf: as}]}>
+          <View style={[styles.sectionWrpr, { alignSelf: as }]}>
             <SectionText
               title="Name"
               info={user?.user_display_name}
@@ -253,18 +263,18 @@ const OrderDetail = ({route, navigation}) => {
 
 export default OrderDetail;
 
-const Product = ({image, name, price, lang}) => (
+const Product = ({ image, name, price, lang }) => (
   <View
     style={[
       styles.productContainer,
-      {flexDirection: lang === 'ar' ? 'row-reverse' : 'row'},
+      { flexDirection: lang === 'ar' ? 'row-reverse' : 'row' },
     ]}>
     <View
       style={[
         styles.productTitle,
-        {flexDirection: lang === 'ar' ? 'row-reverse' : 'row'},
+        { flexDirection: lang === 'ar' ? 'row-reverse' : 'row' },
       ]}>
-      <Image source={{uri: image}} style={styles.productImg} />
+      <Image source={{ uri: image }} style={styles.productImg} />
       <SectionText info={name} fz={12} />
     </View>
     <SectionText info={price} />
@@ -272,7 +282,7 @@ const Product = ({image, name, price, lang}) => (
 );
 
 const styles = StyleSheet.create({
-  sectionWrpr: {marginTop: 8},
+  sectionWrpr: { marginTop: 8 },
   multiBtnWrpr: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -285,6 +295,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 8,
   },
-  productTitle: {alignItems: 'center', width: '65%'},
-  productImg: {height: 45, width: 45, borderRadius: 5},
+  productTitle: { alignItems: 'center', width: '65%' },
+  productImg: { height: 45, width: 45, borderRadius: 5 },
 });
