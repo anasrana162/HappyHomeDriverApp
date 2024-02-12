@@ -12,6 +12,7 @@ import { selectUser } from '../../redux/authSlice';
 import { useSelector } from 'react-redux';
 import { updateOrder } from '../../api/APIs';
 import { selectLanguage } from '../../redux/languageSlice';
+import moment from 'moment';
 
 const OrderDetail = ({ route, navigation }) => {
   const [loader, setLoader] = useState(false);
@@ -37,7 +38,7 @@ const OrderDetail = ({ route, navigation }) => {
     refunds, //add in api parameter
   } = item;
 
-  const { first_name, last_name, address_1, address_2, city,phone } = billing;
+  const { first_name, last_name, address_1, address_2, city, phone } = billing;
 
 
   console.log('Billing :>> ', item?.line_items);
@@ -74,7 +75,7 @@ const OrderDetail = ({ route, navigation }) => {
     console.log(params, '-----------rightBtnHandler-----------', res);
   };
   const as = loadLang === 'ar' ? 'flex-end' : 'flex-start';
-
+  console.log('date_created :>> ', date_created);
   return (
     <View style={globals.mainWrpr}>
       <OrderHeader title={`#${id}`} />
@@ -87,7 +88,7 @@ const OrderDetail = ({ route, navigation }) => {
         <Box>
           <BoxHeading heading="Info" icon={ASSETS.info} />
           <View style={[{ alignSelf: as }, styles.sectionWrpr]}>
-            <SectionText title="Date" info={date_created} coln={true} />
+            <SectionText title="Date" info={moment(date_created).format("DD/MM/YY")} coln={true} />
             <SectionText title="Status" info={status} coln={true} />
             <SectionText
               title="Payment Method"
@@ -125,7 +126,7 @@ const OrderDetail = ({ route, navigation }) => {
         <Box>
           <BoxHeading heading="Pickup Address" icon={ASSETS.shop} />
           <View style={[styles.sectionWrpr, { alignSelf: as }]}>
-            <SectionText info="Happy Home DHA Phase:2" />
+            <SectionText info="Happy Home" />
           </View>
           {status === 'out-for-delivery' && (
             <LongButton title="Navigate" icon={ASSETS.navigate} />
